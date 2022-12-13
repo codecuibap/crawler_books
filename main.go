@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -13,19 +15,29 @@ import (
 
 // Book stores information
 type Book struct {
-	Title          string
-	URL            string
-	Author         string
-	ISBN           string
-	Price          int64
-	TotalPage      int64
-	CollectionType string
-	Description    string
-	Rating         float32
+	Title          string  `json:"title"`
+	URL            string  `json:"detail"`
+	Author         string  `json:"author"`
+	ISBN           string  `json:"isbn"`
+	Price          int64   `json:"price"`
+	TotalPage      int64   `json:"number_of_page"`
+	CollectionType string  `json:"category"`
+	Name           string  `json:"book_nane"`
+	Group          string  `json:"book_shelf"`
+	Description    string  `json:"description"`
+	Rating         float32 `json:"rate"`
 }
 
 func main() {
-	fName := "books.json"
+	site := flag.String("site", "nxbkimdong.com.vn", "input site to scrap")
+	flag.Parse()
+
+	config, err := LoadConfig(*site)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	fName := fmt.Sprintf("%s_books.json", *site)
 	file, err := os.Create(fName)
 	if err != nil {
 		log.Fatalf("Cannot create file %q: %s\n", fName, err)
@@ -36,7 +48,7 @@ func main() {
 	// Instantiate default collector
 	c := colly.NewCollector(
 		// Visit only domains: nxbkimdong.com.vn, www.nxbkimdong.com.vn
-		colly.AllowedDomains("nxbkimdong.com.vn", "www.nxbkimdong.com.vn"),
+		colly.AllowedDomains(config.Site, fmt.Sprintf("www%s", config.Site)),
 
 		// Cache responses to prevent multiple download of pages
 		// even if the collector is restarted
@@ -53,7 +65,7 @@ func main() {
 
 		link := e.Attr("href")
 		// If link is not all page then return
-		if !strings.Contains(link, "collections/all?page=") {
+		if !strings.Contains(link, config.Collection) {
 			return
 		}
 
@@ -67,29 +79,30 @@ func main() {
 	})
 
 	// On every <a> element with collection-product-card class call callback
-	c.OnHTML(`.product-item > .product-img > a`, func(e *colly.HTMLElement) {
+	c.OnHTML(config.Product, func(e *colly.HTMLElement) {
 		// Activate detailCollector if the link contains "nxbkimdong.com.vn/products"
 		bookDetailUrl := e.Request.AbsoluteURL(e.Attr("href"))
-		if strings.Contains(bookDetailUrl, "nxbkimdong.com.vn/products") {
+		if strings.Contains(bookDetailUrl, config.UrlDetail) {
+			log.Println("Load child: ", bookDetailUrl)
 			detailCollector.Visit(bookDetailUrl)
 		}
 	})
 
 	// Extract details of the book
-	detailCollector.OnHTML(`section[id=product-wrapper]`, func(e *colly.HTMLElement) {
+	detailCollector.OnHTML(config.Section, func(e *colly.HTMLElement) {
 		log.Println("Book found", e.Request.URL)
-		title := e.ChildText("div.header_wishlist > h1")
+		title := e.ChildText(config.Title)
 		if title == "" {
 			log.Println("No title found", e.Request.URL)
 			return
 		}
 
-		price, err := strconv.ParseInt(ClearString(e.ChildText(".ProductPrice")), 10, 0)
+		price, err := strconv.ParseInt(ClearString(e.ChildText(config.Price)), 10, 0)
 		if err != nil {
 			price = -1
 		}
 
-		pageNumber, err := strconv.ParseInt(ClearString(e.ChildText("ul>li:nth-child(5)")), 10, 0)
+		pageNumber, err := strconv.ParseInt(ClearString(e.ChildText(config.Page)), 10, 0)
 		if err != nil {
 			pageNumber = 0
 		}
@@ -97,27 +110,30 @@ func main() {
 		book := Book{
 			Title:          title,
 			URL:            e.Request.URL.String(),
-			Author:         e.ChildText("ul>li:nth-child(2) > a"),
-			ISBN:           e.ChildText("ul>li:nth-child(1) > strong"),
+			Author:         e.ChildText(config.Author),
+			ISBN:           e.ChildText(config.ISBN),
 			Price:          price,
 			TotalPage:      pageNumber,
-			CollectionType: e.ChildText("ul>li:nth-child(8) > a"),
-			Description:    "",
+			CollectionType: e.ChildText(config.Category),
+			Name:           e.ChildText(config.Name),
+			Group:          e.ChildText(config.Group),
+			Description:    e.ChildText(config.Description),
 			Rating:         0,
 		}
-
+		log.Println("Book", book)
 		books = append(books, book)
 	})
 
-	c.Visit("https://nxbkimdong.com.vn/collections/all?page=1")
+	c.Visit(config.ScrapSite)
 
 	enc := json.NewEncoder(file)
 	enc.SetIndent("", "  ")
 
 	// Dump json to the standard output
+
 	enc.Encode(books)
 
-	log.Println("Finished")
+	log.Println("Finished", len(books))
 }
 
 var nonAlphanumericRegex = regexp.MustCompile(`[^0-9]+`)
