@@ -25,7 +25,7 @@ type Book struct {
 	Name           string  `json:"book_nane"`
 	Group          string  `json:"book_shelf"`
 	Description    string  `json:"description"`
-	Rating         float32 `json:"rate"`
+	Rating         float64 `json:"rate"`
 }
 
 func main() {
@@ -91,35 +91,21 @@ func main() {
 	// Extract details of the book
 	detailCollector.OnHTML(config.Section, func(e *colly.HTMLElement) {
 		log.Println("Book found", e.Request.URL)
-		title := e.ChildText(config.Title)
-		if title == "" {
-			log.Println("No title found", e.Request.URL)
-			return
-		}
-
-		price, err := strconv.ParseInt(ClearString(e.ChildText(config.Price)), 10, 0)
-		if err != nil {
-			price = -1
-		}
-
-		pageNumber, err := strconv.ParseInt(ClearString(e.ChildText(config.Page)), 10, 0)
-		if err != nil {
-			pageNumber = 0
-		}
 
 		book := Book{
-			Title:          title,
+			Title:          title(config, e),
 			URL:            e.Request.URL.String(),
-			Author:         e.ChildText(config.Author),
-			ISBN:           e.ChildText(config.ISBN),
-			Price:          price,
-			TotalPage:      pageNumber,
-			CollectionType: e.ChildText(config.Category),
-			Name:           e.ChildText(config.Name),
-			Group:          e.ChildText(config.Group),
-			Description:    e.ChildText(config.Description),
-			Rating:         0,
+			Author:         author(config, e),
+			ISBN:           isbn(config, e),
+			Price:          price(config, e),
+			TotalPage:      page(config, e),
+			CollectionType: category(config, e),
+			Name:           name(config, e),
+			Group:          group(config, e),
+			Description:    description(config, e),
+			Rating:         rate(config, e),
 		}
+
 		log.Println("Book", book)
 		books = append(books, book)
 	})
@@ -133,11 +119,97 @@ func main() {
 
 	enc.Encode(books)
 
-	log.Println("Finished", len(books))
+	log.Printf("Total books extracted %d", len(books))
 }
 
-var nonAlphanumericRegex = regexp.MustCompile(`[^0-9]+`)
+var (
+	nonAlphanumericRegex = regexp.MustCompile(`[^0-9]+`)
+	nonisbn              = regexp.MustCompile(`[^0-9\\-]+`)
+)
 
 func ClearString(str string) string {
 	return nonAlphanumericRegex.ReplaceAllString(str, "")
+}
+
+func toISBN(str string) string {
+	return nonisbn.ReplaceAllString(str, "")
+}
+
+func title(config *StrategyParse, e *colly.HTMLElement) string {
+	return extract(config.Title, e)
+}
+
+func author(config *StrategyParse, e *colly.HTMLElement) string {
+	return extract(config.Author, e)
+}
+
+func isbn(config *StrategyParse, e *colly.HTMLElement) string {
+
+	return toISBN(extract(config.ISBN, e))
+}
+
+func price(config *StrategyParse, e *colly.HTMLElement) int64 {
+	return extractInt(config.Price, e)
+}
+
+func page(config *StrategyParse, e *colly.HTMLElement) int64 {
+	return extractInt(config.Page, e)
+}
+
+func category(config *StrategyParse, e *colly.HTMLElement) string {
+	return extract(config.Category, e)
+}
+
+func name(config *StrategyParse, e *colly.HTMLElement) string {
+	return extract(config.Name, e)
+}
+
+func group(config *StrategyParse, e *colly.HTMLElement) string {
+	return extract(config.Group, e)
+}
+
+func description(config *StrategyParse, e *colly.HTMLElement) string {
+	return extract(config.Description, e)
+}
+
+func rate(config *StrategyParse, e *colly.HTMLElement) float64 {
+	for _, k := range config.Rating {
+		if text := e.ChildText(k); text != "" {
+			rate, err := strconv.ParseFloat(ClearString(e.ChildText(k)), 64)
+			if err != nil {
+				rate = -1
+			} else {
+				log.Printf("extracted %v from %s\n", rate, k)
+				return rate
+			}
+
+		}
+	}
+	return -1
+}
+
+func extract(keys []string, e *colly.HTMLElement) string {
+	for _, k := range keys {
+		if text := e.ChildText(k); text != "" {
+			log.Printf("Extracted %s from %s\n", text, k)
+			return text
+		}
+	}
+	return ""
+}
+
+func extractInt(keys []string, e *colly.HTMLElement) int64 {
+	for _, k := range keys {
+		if text := e.ChildText(k); text != "" {
+			page, err := strconv.ParseInt(ClearString(text), 10, 0)
+			if err != nil {
+				page = -1
+			} else {
+				log.Printf("Extracted %d from %s\n", page, k)
+				return page
+			}
+
+		}
+	}
+	return -1
 }

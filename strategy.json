@@ -7,16 +7,30 @@
       "url_detail": "nxbkimdong.com.vn/products",
       "product": ".product-item > .product-img > a",
       "section": "section[id=product-wrapper]",
-      "title": "div.header_wishlist > h1",
-      "price": ".ProductPrice",
-      "page": "ul>li:nth-child(5)",
-      "author": "ul>li:nth-child(2) > a",
-      "isbn": "ul>li:nth-child(1) > strong",
-      "category": "div.breadcrumb-small>a:nth-child(2)",
-      "name": "div.breadcrumb-small>span:nth-child(3)",
-      "group": "ul>li:nth-child(8) > a",
-      "desc": "",
-      "rating": ""
+      "title": ["div.header_wishlist > h1"],
+      "price": [".ProductPrice"],
+      "page": [
+        "div.pro-short-desc>ul>li:nth-child(5)",
+        "spen.field-name-field-product-sotrang span.field-items > span"
+      ],
+      "author": [
+        "ul>li:nth-child(2) > a",
+        "span.field-name-field-product-tacgia span.field-items > span"
+      ],
+      "isbn": [
+        "div.pro-short-desc ul>li:nth-child(1) > strong",
+        "div.pro-short-desc ul>li:nth-child(1)",
+        "span.field-name-field-product--isbn span.field-items > span"
+      ],
+      "category": [
+        "section[id=breadcrumb-wrapper] div.breadcrumb-content div.breadcrumb-small a:nth-child(2)"
+      ],
+      "name": [
+        "section[id=breadcrumb-wrapper] div.breadcrumb-content div.breadcrumb-small a:nth-child(3)"
+      ],
+      "group": ["ul>li:nth-child(8) > a"],
+      "desc": [],
+      "rating": []
     },
     {
       "scrap_site": "https://firstnews.com.vn/vi/tac-pham?page=1",
@@ -25,16 +39,16 @@
       "url_detail": "vi/tac-pham/",
       "product": "div.writer-wrap div.list-writer-wrap div.item a.link",
       "section": "main[id=pProductDetail]",
-      "title": "div.copy-dt>div>h2",
-      "price": "div.form-buy-product span.price-buy",
-      "page": "div.copy>ul>li:nth-child(2)>p",
-      "author": "div.copy-dt ul.if-wt li:nth-child(1)>a",
-      "isbn": "",
-      "category": "div.copy-dt>div>a",
-      "name": "div.copy-dt>div>h2",
-      "group": "div.copy-dt>div>a",
-      "desc": "",
-      "rating": ""
+      "title": ["div.copy-dt>div>h2"],
+      "price": ["div.form-buy-product span.price-buy"],
+      "page": ["div.copy>ul>li:nth-child(2)>p"],
+      "author": ["div.copy-dt ul.if-wt li:nth-child(1)>a"],
+      "isbn": [],
+      "category": ["div.copy-dt>div>a"],
+      "name": ["div.copy-dt>div>h2"],
+      "group": ["div.copy-dt>div>a"],
+      "desc": [],
+      "rating": []
     }
   ]
 }
