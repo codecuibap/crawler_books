@@ -40,3 +40,17 @@ Format output by json
       "rating": []
     },
 ```
+
+## RUN
+
+```shell
+#BUILD
+make build
+
+#RUN
+make crawl site="nxbkimdong.com.vn"
+```
+
+## CLEAR CACHE
+
+Delete cache folder to clear cache
