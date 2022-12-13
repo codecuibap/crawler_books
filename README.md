@@ -6,6 +6,8 @@ Format output by json
 
 ## Setting config by query selector (css) for each site.
 
+By Descending pority in array
+
 ```json
     {
       "scrap_site": "https://nxbkimdong.com.vn/collections/all?page=1", // first site
@@ -54,3 +56,37 @@ make crawl site="nxbkimdong.com.vn"
 ## CLEAR CACHE
 
 Delete cache folder to clear cache
+
+## TODO
+
+| Site                         | Test    |
+| ---------------------------- | ------- |
+| http://www.nxbkimdong.com.vn | ✅ DONE |
+| https://www.nxbtre.com.vn    |         |
+| https://www.nxbhcm.com.vn    |         |
+| https://www.nxbgd.vn         |         |
+| https://nxbhoinhavan.vn      | ✅ DONE |
+| http://www.nxblaodong.com.vn |         |
+| https://nxbdantri.com.vn     |         |
+| https://nxbphunu.com.vn      |         |
+| https://dinhtibooks.com.vn   |         |
+| https://nhanam.vn            | ✅ DONE |
+| https://sachdonga.vn         |         |
+| https://www.fahasa.com       |         |
+| https://alphabooks.vn        | ✅ DONE |
+| https://thaihabooks.com      |         |
+| https://firstnews.com.vn/vi  | ✅ DONE |
+
+## Version 2
+
+> Fix performance && prety error
+
+> Add image url, thumbnail list
+
+> Category collection
+
+> Fix Author & ISBN
+
+> Add more format (csv, json)
+
+> Add store provider (mongo, elaticsearch)

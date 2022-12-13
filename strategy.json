@@ -80,6 +80,49 @@
       ],
       "desc": [],
       "rating": []
+    },
+    {
+      "scrap_site": "https://alphabooks.vn/tat-ca?page=1",
+      "site": "alphabooks.vn",
+      "collection": "/tat-ca?page=",
+      "url_detail": "alphabooks.vn/",
+      "product": "div.all-product-area + div.row.multi-columns-row.row-all div.laster-thumb a.prod-img",
+      "section": "div.product-details-area",
+      "title": ["h2[itemprop=name]"],
+      "price": [
+        "div.price-box-small p:nth-child(2) span.special-price",
+        "div.price-box-small p:nth-child(1) span.special-price",
+        "div.price-box-small p:nth-child(1) span.old-price"
+      ],
+      "page": [],
+      "author": [],
+      "isbn": [],
+      "category": [],
+      "name": ["h2[itemprop=name]"],
+      "group": [],
+      "desc": ["p.des_content"],
+      "rating": []
+    },
+    {
+      "scrap_site": "https://nhanam.vn/collections/all?page=1",
+      "site": "nhanam.vn",
+      "collection": "collections/all?page=",
+      "url_detail": "/products",
+      "product": ".product-item > .product-img > a",
+      "section": "section[id=product-wrapper]",
+      "title": ["h1[itemprop=name]"],
+      "price": [".ProductPrice"],
+      "page": [],
+      "author": [
+        "div.pro-brand a",
+        "span.field-name-field-product-tacgia span.field-items > span"
+      ],
+      "isbn": [],
+      "category": [],
+      "name": ["h1[itemprop=name]"],
+      "group": [],
+      "desc": [],
+      "rating": []
     }
   ]
 }
