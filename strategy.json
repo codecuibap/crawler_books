@@ -49,6 +49,37 @@
       "group": ["div.copy-dt>div>a"],
       "desc": [],
       "rating": []
+    },
+    {
+      "scrap_site": "https://nxbhoinhavan.vn/san-pham/san-pham.html?curPg=1",
+      "site": "nxbhoinhavan.vn",
+      "collection": "/san-pham/san-pham.html?curPg=",
+      "url_detail": "/chi-tiet/",
+      "product": "div.product-item > div.product-info > div.product-title > a",
+      "section": "div[id=PageContainer]",
+      "title": ["div.product-content h1"],
+      "price": [".ProductPrice", "div.pro-price > span"],
+      "page": ["div.pro-short-desc>ul>li:nth-child(5)"],
+      "author": [
+        "div.pro-short-desc>ul>li:nth-child(3) > strong",
+        "div.pro-short-desc>ul>li:nth-child(2) > strong > form > button",
+        "div.pro-short-desc>ul>li:nth-child(3)"
+      ],
+      "isbn": [
+        "div.pro-short-desc>ul>li:nth-child(2) > strong",
+        "div.pro-short-desc>ul>li:nth-child(2)"
+      ],
+      "category": [
+        "div.pro-short-desc>ul>li:nth-child(1) > strong",
+        "div.pro-short-desc>ul>li:nth-child(1)"
+      ],
+      "name": ["div.product-content h1"],
+      "group": [
+        "div.pro-short-desc>ul>li:nth-child(1) > strong",
+        "div.pro-short-desc>ul>li:nth-child(1)"
+      ],
+      "desc": [],
+      "rating": []
     }
   ]
 }
